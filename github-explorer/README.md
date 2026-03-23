@@ -114,7 +114,7 @@ Instead of global state libraries, i used Vue composables:
 
 ---
 
-## 3. Performance Consideration
+## Performance Consideration
 
 Search input is debounced (500ms) to:
 
@@ -124,18 +124,20 @@ Search input is debounced (500ms) to:
 
 ---
 
-## 4. Client-Side Caching
+## 3. Client-Side Caching
 
-Search results are cached using a `Map`:
-
-```javascript
-cacheKey = `${query}_${page}`
-```
+Search results are cached using a `Map` with keys based on params.
 
 ### Benefits
 
-* Prevents duplicate API requests
 * Improves perceived performance
+* Allows me to store and retrieve search results efficiently without making redundant API calls for the same parameters.
+
+---
+
+## 4. Using Set
+
+This improves performance in array query using O(1) rather than O(n).
 
 ---
 
@@ -177,6 +179,18 @@ The app differentiates between:
 
 ---
 
+## 9. UI/UX Decisions
+
+Skeleton loaders
+Responsive grid layout
+Clear empty states for better user guidance
+Retry mechanism for resilience against API errors
+Darkmode support
+Micro-interations
+Animations
+
+---
+
 ## Additional Feature
 
 It has a feature to display **top contributors** for each repository inside the details page.
@@ -185,11 +199,15 @@ Reason:
 I chose contributors because it provides insight into active collaboration
 and is more user-friendly than raw issue data.
 
+---
+
 ## Known Limitations
 
 ## 1. Client-Side Filtering Only
 
-Filtering (language, sorting) is done after fetching results.
+* Filtering (language, sorting) is done after fetching results.
+* Language filtering is done on the client
+* This can be inefficient for large datasets
 
 ### Trade-off
 
@@ -214,6 +232,7 @@ Some results do not show, but i can get them if i know the repo name and repo ow
 | Debouncing                       | Slight delay vs reduced API load
 | Caching in memory                | Fast, but resets on refresh  
 | localStorage favorites           | Simple, but not persistent across devices
+| Vitest over Cypress or Jest      | Best for Unit test, not E2E test
 
 ---
 
@@ -221,8 +240,10 @@ Some results do not show, but i can get them if i know the repo name and repo ow
 
 Basic unit tests are included using Vitest, focusing on:
 
-* Composable initialization
+* composables initialization
 * State correctness
+
+Using a fake Api module from vi.mock to simulate a network request and fake timers to simulate real setTimeout.
 
 ---
 
