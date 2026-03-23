@@ -1,3 +1,0 @@
-# RepoEx
-
-GitHub Repository Explorer
