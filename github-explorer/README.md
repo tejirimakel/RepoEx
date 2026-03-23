@@ -5,6 +5,16 @@
 A modern single-page application built with Vue 3 (Composition API) that allows users to search GitHub repositories, view detailed information, and manage favorites locally.
 This project emphasizes clean architecture, performance, scalability, and user experience, aligning with real-world frontend engineering practices.
 
+## Objectives
+
+* Build a performant and responsive frontend application
+
+Demonstrate clean architecture and separation of concerns
+
+Optimize API interactions and handle edge cases (e.g., rate limiting)
+
+Deliver a production-ready user experience
+
 ## Tech Stack
 
 * Vue 3 (Composition API)
@@ -259,10 +269,16 @@ Basic unit tests are included using Vitest, focusing on:
 
 Testing Approach includes:
 
-* Using a fake Api module from vi.mock to simulate or mock a network request 
+* Using a fake Api module from vi.mock to simulate or mock a network request
 * Using fake timers to simulate real setTimeout behaviour.
 
 ---
+
+## Potential Future Improvements
+
+* Move Filtering to API Layer
+* Add Cache Invalidation Strategy
+* Add toast notifications for enhanced ux
 
 ## Author
 
