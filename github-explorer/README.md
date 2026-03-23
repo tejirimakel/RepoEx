@@ -118,7 +118,7 @@ Instead of global state libraries, i used Vue composables:
 
 Search input is debounced (500ms) to:
 
-* Reduce API calls
+* Reduce API calls on every key stroke
 * Improve performance
 * Prevent rate limiting
 
@@ -179,15 +179,26 @@ The app differentiates between:
 
 ---
 
-## 9. UI/UX Decisions
+## 9. Race Condition Handling
 
-Skeleton loaders
-Responsive grid layout
-Clear empty states for better user guidance
-Retry mechanism for resilience against API errors
-Darkmode support
-Micro-interations
-Animations
+In other to reduce API request made due to users typing fast in the searchbar can sometimes trigger a multiple request in rapid succession. I have stored requested in an ID to ensure stale data dont overwrite the new data.
+
+### This was done to ensure
+
+* The UI stayed consistent during updates
+* To reduce unnecessary Api calls.
+
+--
+
+## 10. UI/UX Decisions
+
+* Skeleton loaders
+* Responsive grid layout
+* Clear empty states for better user guidance
+* Retry mechanism for resilience against API errors
+* Darkmode support
+* Micro-interations
+* Animations
 
 ---
 
@@ -225,14 +236,14 @@ Some results do not show, but i can get them if i know the repo name and repo ow
 
 ## Trade-offs
 
-| Decision                         | Trade-off
-| ----------------------------------------------------------
-| Composable state vs global store | Simpler, but less centralized
-| Client-side filtering            | Fast UI, but limited scalability
-| Debouncing                       | Slight delay vs reduced API load
-| Caching in memory                | Fast, but resets on refresh  
-| localStorage favorites           | Simple, but not persistent across devices
-| Vitest over Cypress or Jest      | Best for Unit test, not E2E test
+| Decision                         | Trade-off                                |
+| ----------------------------------------------------------------------------|
+| Composable state vs global store | Simpler, but less centralized            |
+| Client-side filtering            | Fast UI, but limited scalability         |
+| Debouncing                       | Slight delay vs reduced API load         |
+| Caching in memory                | Fast, but resets on refresh              |
+| localStorage favorites           | Simple, but not persistent across devices|
+| Vitest over Cypress or Jest      | Best for Unit test, not E2E test         |
 
 ---
 
