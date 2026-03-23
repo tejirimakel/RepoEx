@@ -7,19 +7,19 @@ This project emphasizes clean architecture, performance, scalability, and user e
 
 ## Tech Stack
 
-Vue 3
-Vue Router
-Tailwind CSS
-Fetch REST API
-Vite
-Vitest (unit test)
+* Vue 3 (Composition API)
+* Vue Router
+* Tailwind CSS
+* Fetch API (REST)
+* Vite
+* Vitest (unit test)
 
 ## Features
 
 ### Core Features
 
 * Search GitHub repositories by keyword
-* View repository details (metadata + top contributors)
+* View repository details (metadata and top contributors)
 * Save and manage favorite repositories (localStorage)
 * Fully responsive design (desktop + mobile)
 
@@ -28,9 +28,9 @@ Vitest (unit test)
 * Debounced search input (optimized API usage)
 * Sorting (by stars or last updated)
 * Filtering (by programming language)
-* Caching of search results (reduces API calls)
-* Pagination with "Load More"
-* Smart empty states (search vs filter vs initial)
+* Client-side caching of search results
+* Pagination with "Load More" functionality
+* Smart context aware empty states (initial, search, and filtered states)
 * Error handling (including API rate limits)
 
 ---
@@ -91,7 +91,7 @@ npm run test:ui (for ui on browser)
 
 ## 1. Composable-Based State Management
 
-Instead of global state libraries, i used Vue composables:
+Instead of global state libraries, the application leverages Vue composables:
 
 * `useSearch` → handles search, pagination, filtering, caching
 * `useFavorites` → manages localStorage favorites
@@ -110,13 +110,13 @@ Instead of global state libraries, i used Vue composables:
 | API Layer (`git.js`) | Handles HTTP requests  |
 | Composables          | logic & state          |
 | Components           | UI rendering           |
-| Views                | Pages rendering        |
+| Views                | Page structure         |
 
 ---
 
-## Performance Consideration
+## 3. Performance Consideration
 
-Search input is debounced (500ms) to:
+The search input is debounced (500ms) to:
 
 * Reduce API calls on every key stroke
 * Improve performance
@@ -124,9 +124,9 @@ Search input is debounced (500ms) to:
 
 ---
 
-## 3. Client-Side Caching
+## 4. Client-Side Caching
 
-Search results are cached using a `Map` with keys based on params.
+Search results are cached using a `Map` with keys derived from query params.
 
 ### Benefits
 
@@ -135,90 +135,93 @@ Search results are cached using a `Map` with keys based on params.
 
 ---
 
-## 4. Using Set
+## 5. Data Structuring using (Set)
 
-This improves performance in array query using O(1) rather than O(n).
+This is used for efficient lookups, improving performance in array query using O(1) rather than O(n).
 
 ---
 
-## 5. Derived States using computed in vue
+## 6. Derived States using computed in vue
 
 Filtering and sorting are implemented using computed values:
 
 ### Why
 
-* Avoids mutating raw API data
-* Keeps transformations predictable because data is reactive
+* Prevents mutation of raw API data
+* Keeps transformations predictable and reactive
 * Ensures you don't have to manually call a function every time a user changes a filter.
 
 ---
 
-## 6. UI State Handling
+## 7. UI State Handling
 
-The app differentiates between:
+The app clearly differentiates between:
 
-* No search yet
+* No search yet (Initial state)
 * No results from API
 * No results after filtering
 
 ---
 
-## 7. Favorites Persistence Strategy
+## 8. Favorites Persistence Strategy
 
 * Favorites are stored in localStorage.
 * Only essential fields are saved.
 
 ---
 
-## 8. Error Handling Strategy
+## 9. Error Handling Strategy
 
 * Handles generic API errors
 * Detects GitHub rate limiting (403)
 * Provides user-friendly feedback
-* Includes retry mechanism
+* Includes a retry mechanism
 
 ---
 
-## 9. Race Condition Handling
+## 10. Race Condition Handling
 
-In other to reduce API request made due to users typing fast in the searchbar can sometimes trigger a multiple request in rapid succession. I have stored requested in an ID to ensure stale data dont overwrite the new data.
+Rapid typing in the search input can trigger multiple API requests. To prevent stale data from overwriting newer results:
+
+* Each request is assigned a unique identifier (id)
+
+* Only the latest response updates the UI
 
 ### This was done to ensure
 
-* The UI stayed consistent during updates
+* The UI stayed consistent
 * To reduce unnecessary Api calls.
 
 ---
 
-## 10. UI/UX Decisions
+## 11. UI/UX Decisions
 
-* Skeleton loaders
+* Skeleton loaders for improved perceived performance
 * Responsive grid layout
 * Clear empty states for better user guidance
 * Retry mechanism for resilience against API errors
-* Darkmode support
-* Micro-interations
-* Animations
+* Dark mode support
+* Micro-interations and animations
 
 ---
 
 ## Additional Feature
 
-It has a feature to display **top contributors** for each repository inside the details page.
+## Top Contributors
+
+The application displays top contributors for each repository on the details page.
 
 Reason:
-I chose contributors because it provides insight into active collaboration
-and is more user-friendly than raw issue data.
+This provides meaningful insight into repository activity and collaboration, offering more value than less user-friendly data such as raw issue metrics.
 
 ---
 
 ## Known Limitations
 
-## 1. Client-Side Filtering Only
+## 1. Client-Side Filtering
 
-* Filtering (language, sorting) is done after fetching results.
+* Filtering and sorting is done after fetching results.
 * Language filtering is done on the client
-* This can be inefficient for large datasets
 
 ### Trade-off
 
@@ -229,8 +232,8 @@ and is more user-friendly than raw issue data.
 
 ## 2. Limited Pagination Depth
 
-GitHub API restricts deep pagination.
-Some results do not show, but i can get them if i know the repo name and repo owner from the url.
+* GitHub API restricts deep pagination.
+* Some results may not be accessible through pagination alone
 
 ---
 
@@ -242,8 +245,8 @@ Some results do not show, but i can get them if i know the repo name and repo ow
 | Client-side filtering            | Fast UI, but limited scalability         |
 | Debouncing                       | Slight delay vs reduced API load         |
 | Caching in memory                | Fast, but resets on refresh              |
-| localStorage favorites           | Simple,but not persistent across devices |
-| Vitest over Cypress or Jest      | Best for Unit test, not E2E test         |
+| localStorage favorites           | Simple, but not persistent across devices|
+| Vitest over Cypress or Jest      | Great for Unit tests, not for E2E testing|
 
 ---
 
@@ -251,10 +254,13 @@ Some results do not show, but i can get them if i know the repo name and repo ow
 
 Basic unit tests are included using Vitest, focusing on:
 
-* composables initialization
-* State correctness
+* Composables initialization
+* State management correctness
 
-Using a fake Api module from vi.mock to simulate a network request and fake timers to simulate real setTimeout.
+Testing Approach includes:
+
+* Using a fake Api module from vi.mock to simulate or mock a network request 
+* Using fake timers to simulate real setTimeout behaviour.
 
 ---
 
