@@ -188,7 +188,7 @@ In other to reduce API request made due to users typing fast in the searchbar ca
 * The UI stayed consistent during updates
 * To reduce unnecessary Api calls.
 
---
+---
 
 ## 10. UI/UX Decisions
 
@@ -237,12 +237,12 @@ Some results do not show, but i can get them if i know the repo name and repo ow
 ## Trade-offs
 
 | Decision                         | Trade-off                                |
-| ----------------------------------------------------------------------------|
+| -------------------------------- | ---------------------------------------- |
 | Composable state vs global store | Simpler, but less centralized            |
 | Client-side filtering            | Fast UI, but limited scalability         |
 | Debouncing                       | Slight delay vs reduced API load         |
 | Caching in memory                | Fast, but resets on refresh              |
-| localStorage favorites           | Simple, but not persistent across devices|
+| localStorage favorites           | Simple,but not persistent across devices |
 | Vitest over Cypress or Jest      | Best for Unit test, not E2E test         |
 
 ---
