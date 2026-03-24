@@ -5,16 +5,6 @@
 A modern single-page application built with Vue 3 (Composition API) that allows users to search GitHub repositories, view detailed information, and manage favorites locally.
 This project emphasizes clean architecture, performance, scalability, and user experience, aligning with real-world frontend engineering practices.
 
-## Objectives
-
-* Build a performant and responsive frontend application
-
-Demonstrate clean architecture and separation of concerns
-
-Optimize API interactions and handle edge cases (e.g., rate limiting)
-
-Deliver a production-ready user experience
-
 ## Tech Stack
 
 * Vue 3 (Composition API)
