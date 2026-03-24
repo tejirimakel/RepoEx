@@ -1,5 +1,5 @@
 <template>
-    <button :disabled="disabled" @click="$emit('click')"
+    <button @click="$emit('click')"
         class="px-4 py-2 border rounded hover:bg-gray-100 transition dark:hover:bg-neutral-700">
           <span class="flex items-center justify-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -11,11 +11,5 @@
 </template>
 
 <script setup>
-defineProps({
-  disabled: {
-    type: Boolean,
-    default: false
-  }
-})
 defineEmits(['click'])
 </script>
