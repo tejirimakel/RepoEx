@@ -31,9 +31,14 @@
         <span>🕒 {{ formatDate(repo.updated_at) }}</span>
       </div>
 
-      <a :href="repo.html_url" target="_blank" class="inline-block text-purple-700 dark:text-purple-400 hover:underline">
-        View on GitHub ↗
-      </a>
+
+      <div class="flex items-center gap-4 justify-between">
+        <a :href="repo.html_url" target="_blank"
+          class="inline-block text-purple-700 dark:text-purple-400 hover:underline">
+          View on GitHub ↗
+        </a>
+        <FavBtn :repo="repo" @click.stop />
+      </div>
 
       <div class="mt-6">
         <h2 class="font-semibold mb-2">Top Contributors</h2>
@@ -67,10 +72,11 @@
 </template>
 
 <script setup>
-import { ref} from "vue"
+import { ref } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { getRepo, getContributors } from "../api/git"
 import CardSkeleton from "../components/CardSkeleton.vue"
+import FavBtn from "../components/FavBtn.vue"
 
 
 const route = useRoute()
@@ -123,5 +129,5 @@ const formatDate = (date) =>
   new Date(date).toLocaleDateString()
 
 const formatStars = (num) =>
- Intl.NumberFormat("en", { notation: "compact" }).format(num)
+  Intl.NumberFormat("en", { notation: "compact" }).format(num)
 </script>
