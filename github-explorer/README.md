@@ -209,7 +209,7 @@ Rapid typing in the search input can trigger multiple API requests. To prevent s
 
 ## Top Contributors
 
-The application displays top contributors for each repository on the details page.
+The application displays top 5 contributors for each repository on the details page.
 
 Reason:
 This provides meaningful insight into repository activity and collaboration, offering more value than less user-friendly data such as raw issue metrics.
@@ -234,6 +234,10 @@ This provides meaningful insight into repository activity and collaboration, off
 
 * GitHub API restricts deep pagination.
 * Some results may not be accessible through pagination alone
+
+## 3. GitHub Api Rate Limitation
+
+* The primary rate limit for unauthenticated requests is 60 requests per hour.
 
 ---
 

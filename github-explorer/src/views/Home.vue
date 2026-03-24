@@ -45,11 +45,9 @@
       </div>
 
       <div v-else-if="error" class="text-center py-10">
-        <p class="text-red-500 mb-3">{{ error }}</p>
+        <p class="text-red-500 mb-8">{{ error }}</p>
         
-        <button @click="debounceSearch" class="px-4 py-2 border rounded hover:bg-gray-100 transition dark:hover:bg-neutral-700">
-        Retry
-      </button>
+        <RetryBtn :disable="loading" @click="debounceSearch" />
       </div>
 
       <div v-else-if="isEmptySearch" class="text-center py-10">
@@ -91,6 +89,7 @@ import { useSearch } from "../composables/useSearch"
 import SearchBar from "../components/SearchBar.vue"
 import Card from "../components/Card.vue"
 import CardSkeleton from "../components/CardSkeleton.vue"
+import RetryBtn from "../components/retryBtn.vue"
 
 const {
   query,
