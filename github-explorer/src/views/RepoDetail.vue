@@ -31,7 +31,7 @@
         <span>🕒 {{ formatDate(repo.updated_at) }}</span>
       </div>
 
-      <a :href="repo.html_url" target="_blank" class="inline-block text-blue-500 hover:underline">
+      <a :href="repo.html_url" target="_blank" class="inline-block text-purple-700 dark:text-purple-400 hover:underline">
         View on GitHub ↗
       </a>
 
@@ -44,7 +44,7 @@
 
         <ul class="space-y-2">
           <li v-for="user in contributors.slice(0, 5)" :key="user.id"
-            class="flex items-center justify-between p-2 border rounded hover:bg-gray-50 transition">
+            class="flex items-center justify-between p-2 border rounded">
             <div class="flex items-center gap-2">
               <img :src="user.avatar_url" :alt="user.login" class="w-6 h-6 rounded-full" />
               <span>{{ user.login }}</span>
