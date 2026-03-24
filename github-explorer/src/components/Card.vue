@@ -1,22 +1,27 @@
 <template>
   <article
-    class="group p-4 border rounded-xl shadow-sm hover:shadow-md transition cursor-pointer bg-white flex flex-col justify-between dark:bg-neutral-800 dark:border-neutral-800"
+    class="group p-4 border border-neutral-400 rounded-xl hover:shadow-md transition cursor-pointer bg-white flex flex-col justify-between dark:bg-neutral-800 dark:border-neutral-800 duration-300 ease-out"
     role="button"
     tabindex="0"
     @click="goToDetail"
     @keydown.enter="goToDetail"
   >
-    <div>
-    
-      <h2 class="text-lg font-semibold group-hover:text-blue-600 transition">
+    <div class="flex items-start gap-4">
+      <div class="flex items-center gap-2">
+              <img :src="repo.owner.avatar_url" :alt="repo.owner.login" class="w-6 h-6 rounded-full" />
+      </div>
+      <h2 class="text-lg font-semibold line-clamp-2">
         {{ repo.name }}
       </h2>
+      </div>
 
-      <p class="text-sm text-gray-500">
-        by <span class="text-purple-400">{{ repo.owner.login }}</span>
+    <div>
+     
+      <p class="text-sm text-neutral-600 dark:text-neutral-400">
+        by <span class="text-purple-800 dark:text-purple-400">{{ repo.owner.login }}</span>
       </p>
 
-      <p class="text-neutral-600 mt-2 line-clamp-3 dark:text-neutral-400">
+      <p class="text-neutral-600 mt-2 line-clamp-2 dark:text-neutral-400">
         {{ repo.description || "No description available." }}
       </p>
     </div>
