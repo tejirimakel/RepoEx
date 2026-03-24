@@ -47,7 +47,7 @@
       <div v-else-if="error" class="text-center py-10">
         <p class="text-red-500 mb-8">{{ error }}</p>
         
-        <RetryBtn :disable="loading" @click="debounceSearch" />
+        <RetryBtn @click="debounceSearch" />
       </div>
 
       <div v-else-if="isEmptySearch" class="text-center py-10">

@@ -11,7 +11,7 @@
 
     <section v-else-if="error" class="text-center py-10">
       <p class="text-red-500 mb-3">{{ error }}</p>
-      <RetryBtn :disable="loading" @click="fetchRepo" />
+      <RetryBtn @click="fetchRepo" />
     </section>
 
     <section v-else-if="repo" class="space-y-4">
