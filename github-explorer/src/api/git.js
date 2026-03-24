@@ -8,7 +8,7 @@ export async function searchRepos(query, page = 1, signal) {
 
    if (res.status === 403) {
    
-    throw new Error("Please wait a one minute before making more requests. Thank you")
+    throw new Error("Please wait one minute before making more requests. Thank you")
    }
 
   if (!res.ok) throw new Error("Failed to fetch repositories")
