@@ -92,6 +92,8 @@ export function useSearch() {
     }, 500);
   };
 
+
+
   const loadMore = async () => {
     if (!hasMore.value || loading.value) return;
     page.value++;

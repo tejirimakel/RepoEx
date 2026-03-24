@@ -11,10 +11,7 @@
 
     <section v-else-if="error" class="text-center py-10">
       <p class="text-red-500 mb-3">{{ error }}</p>
-
-      <button @click="fetchRepo" class="px-4 py-2 border rounded hover:bg-gray-100 transition">
-        Retry
-      </button>
+      <RetryBtn :disable="loading" @click="fetchRepo" />
     </section>
 
     <section v-else-if="repo" class="space-y-4">
@@ -77,6 +74,7 @@ import { useRoute, useRouter } from "vue-router"
 import { getRepo, getContributors } from "../api/git"
 import CardSkeleton from "../components/CardSkeleton.vue"
 import FavBtn from "../components/FavBtn.vue"
+import RetryBtn from "../components/retryBtn.vue"
 
 
 const route = useRoute()
