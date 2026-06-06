@@ -1,6 +1,8 @@
 import { ref, computed } from "vue";
 import { searchRepos } from "../api/git";
 
+const MAX_CACHE_SIZE = 50;
+
 export function useSearch() {
   const query = ref("");
   const repos = ref([]);
@@ -12,20 +14,23 @@ export function useSearch() {
   const language = ref("");
   const hasSearched = ref(false);
   const cache = new Map();
-  const repoIds = ref(new Set());
+  let repoIds = new Set();
 
   let timeout = null;
   let currentRequestId = 0;
 
   const search = async (reset = true) => {
     const trimmed = query.value.trim();
-    if (!trimmed) return;
+
+    if (!trimmed) {
+      repos.value = [];
+      hasSearched.value = false;
+      return;
+    }
 
     loading.value = true;
     error.value = null;
     hasSearched.value = true;
-
-// I am incrementing the currentRequestId before making the API call. This allows me to track which request is the most recent and ignore any responses from previous requests that may arrive.
 
     const requestId = ++currentRequestId;
 
@@ -33,25 +38,22 @@ export function useSearch() {
       if (reset) {
         page.value = 1;
         repos.value = [];
-        repoIds.value = new Set();
+        repoIds = new Set();
         hasMore.value = true;
         cache.clear();
       }
-// I am creating a cache key based on the search query, page number, sorting option, and language filter. This allows me to store and retrieve search results efficiently without making redundant API calls for the same parameters.
+
       const cacheKey = `${trimmed}-${page.value}-${sortBy.value}-${language.value}`;
 
       if (cache.has(cacheKey)) {
         const cached = cache.get(cacheKey);
-
         cached.forEach((repo) => {
-          if (!repoIds.value.has(repo.id)) {
+          if (!repoIds.has(repo.id)) {
             repos.value.push(repo);
-            repoIds.value.add(repo.id);
+            repoIds.add(repo.id);
           }
         });
-
         loading.value = false;
-
         return;
       }
 
@@ -63,16 +65,20 @@ export function useSearch() {
         hasMore.value = false;
         return;
       }
-      const newRepos = [];
 
+      const newRepos = [];
       data.items.forEach((repo) => {
-        if (!repoIds.value.has(repo.id)) {
-          repoIds.value.add(repo.id);
+        if (!repoIds.has(repo.id)) {
+          repoIds.add(repo.id);
           repos.value.push(repo);
           newRepos.push(repo);
         }
       });
 
+      if (cache.size >= MAX_CACHE_SIZE) {
+        const firstKey = cache.keys().next().value;
+        cache.delete(firstKey);
+      }
       cache.set(cacheKey, newRepos);
 
       if (repos.value.length >= data.total_count) {
@@ -135,6 +141,7 @@ export function useSearch() {
     isEmptySearch,
     isFilteredOut,
     loadMore,
+    search,
     debounceSearch,
   };
 }

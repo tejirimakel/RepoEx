@@ -2,7 +2,6 @@
 
 :root {
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -18,8 +17,6 @@
   }
 }
 
-
-
 body {
   margin: 0;
   display: flex;
@@ -31,7 +28,7 @@ body {
 
 h1,
 h2 {
-  font-family: var(--heading);
+  font-family: var(--sans);
   font-weight: 500;
 }
 
@@ -44,6 +41,7 @@ h1 {
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -54,7 +52,7 @@ h2 {
   }
 }
 
-
+@media (prefers-reduced-motion: no-preference) {
   .skeleton {
     background: linear-gradient(
       90deg,
@@ -65,64 +63,59 @@ h2 {
     background-size: 400% 100%;
     animation: shimmer 1.4s ease infinite;
   }
-  
+
   @keyframes shimmer {
     0% { background-position: 100% 0 }
     100% { background-position: -100% 0 }
   }
 
-  .nav-link {
-     color: #4a5568;
-     transition: color 0.2s ease-in-out
-   }
+  .dropdown-enter-active {
+    transition: all 0.25s ease;
+  }
 
-   .nav-link:hover {
-     color: #1a202c;
-   }
-   
-   .active-link {
-   color: #1a202c;
-    font-weight: 600;
-   }
-
-   @media (prefers-color-scheme: dark) {
-     .nav-link {
-       color: #a0aec0;
-     }
-     .nav-link:hover {
-       color: #e2e8f0;
-     }
-     .active-link {
-       color: #e2e8f0;
-     }
-   }
-
-
-.dropdown-enter-from {
-  opacity: 0;
-  transform: translateY(-10px);
+  .dropdown-leave-active {
+    transition: all 0.2s ease;
+  }
 }
 
-.dropdown-enter-to {
-  opacity: 1;
-  transform: translateY(0);
+.skeleton {
+  background: #e0e0e0;
 }
 
-.dropdown-enter-active {
-  transition: all 0.25s ease;
-}
-
-
-.dropdown-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-}
-
+.dropdown-enter-from,
 .dropdown-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
 
-.dropdown-leave-active {
-  transition: all 0.2s ease;
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-link {
+  color: #4a5568;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #1a202c;
+}
+
+.active-link {
+  color: #1a202c;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-link {
+    color: #a0aec0;
+  }
+  .nav-link:hover {
+    color: #e2e8f0;
+  }
+  .active-link {
+    color: #e2e8f0;
+  }
 }
