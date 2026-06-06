@@ -84,6 +84,8 @@ import { ref, onMounted, onUnmounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { getRepo, getContributors } from "../api/git"
 import CardSkeleton from "../components/CardSkeleton.vue"
+import FavBtn from "../components/FavBtn.vue"
+import RetryBtn from "../components/retryBtn.vue"
 
 const route = useRoute()
 const router = useRouter()
