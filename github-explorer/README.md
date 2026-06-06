@@ -17,6 +17,23 @@ A single-page application built with Vue 3 for searching GitHub repositories, vi
 
 ```bash
 npm install
+```
+
+---
+
+## 3. Configure environment variables (optional)
+
+Create a `.env` file in the root:
+
+```env
+VITE_GITHUB_API_URL=https://api.github.com
+```
+
+---
+
+## 4. Run development server
+
+```bash
 npm run dev
 ```
 
