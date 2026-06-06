@@ -13,7 +13,6 @@
     </section>
 
     <section class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6">
-
       <div class="flex flex-col sm:flex-row gap-3">
         <select aria-label="sort-filters" v-model="sortBy" class="border p-2 rounded w-full sm:w-auto">
           <option value="stars">Sort by Stars</option>
@@ -33,20 +32,16 @@
           <option value="HTML">HTML</option>
         </select>
       </div>
-
     </section>
 
     <section>
 
       <div v-if="loading" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
         <CardSkeleton v-for="n in 10" :key="n" />
-
       </div>
 
       <div v-else-if="error" class="text-center py-10">
-        <p class="text-red-500 mb-8">{{ error }}</p>
-        
+        <p class="text-red-500 mb-3">{{ error }}</p>
         <button @click="search" class="px-4 py-2 border rounded hover:bg-gray-100 transition dark:hover:bg-neutral-700">
           Retry
         </button>
@@ -59,24 +54,28 @@
       </div>
 
       <div v-else-if="isFilteredOut" class="text-center py-10">
-        <p class="text-gray-500">
-          No repositories match your selected filters.
-        </p>
+        <p class="text-gray-500">No repositories match your selected filters.</p>
       </div>
 
       <div v-else>
-
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Card v-for="repo in repos" :key="repo.id" :repo="repo" />
+          <Card
+            v-for="repo in repos"
+            :key="repo.id"
+            :repo="repo"
+            v-memo="[repo.id, repo.stargazers_count]"
+          />
         </div>
 
         <div v-if="repos.length > 0" class="flex justify-center mt-6">
-          <button v-if="hasMore" @click="loadMore" :disabled="loading"
-            class="px-5 py-2 border rounded hover:bg-gray-100 transition disabled:opacity-50">
+          <button
+            v-if="hasMore"
+            @click="loadMore"
+            :disabled="loading"
+            class="px-5 py-2 border rounded hover:bg-gray-100 transition disabled:opacity-50"
+          >
             <span v-if="loading">Loading...</span>
-            <span v-else>
-              Load More
-            </span>
+            <span v-else>Load More</span>
           </button>
         </div>
       </div>
@@ -87,11 +86,11 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from "vue"
 import { useSearch } from "../composables/useSearch"
 import SearchBar from "../components/SearchBar.vue"
 import Card from "../components/Card.vue"
 import CardSkeleton from "../components/CardSkeleton.vue"
-import RetryBtn from "../components/retryBtn.vue"
 
 const {
   query,
@@ -105,6 +104,13 @@ const {
   debounceSearch,
   loadMore,
   isEmptySearch,
-  isFilteredOut
+  isFilteredOut,
+  cleanup,
 } = useSearch()
+
+onMounted(() => window.addEventListener('pagehide', cleanup))
+onUnmounted(() => {
+  window.removeEventListener('pagehide', cleanup)
+  cleanup()
+})
 </script>

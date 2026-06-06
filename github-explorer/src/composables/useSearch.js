@@ -139,6 +139,11 @@ export function useSearch() {
       filteredRepos.value.length === 0
   );
 
+  const cleanup = () => {
+    clearTimeout(timeout);
+    currentAbortController?.abort();
+  };
+
   return {
     query,
     repos: filteredRepos,
@@ -153,5 +158,6 @@ export function useSearch() {
     loadMore,
     search,
     debounceSearch,
+    cleanup,
   };
 }
