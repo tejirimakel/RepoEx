@@ -18,6 +18,7 @@ export function useSearch() {
 
   let timeout = null;
   let currentRequestId = 0;
+  let currentAbortController = null;
 
   const search = async (reset = true) => {
     const trimmed = query.value.trim();
@@ -27,6 +28,11 @@ export function useSearch() {
       hasSearched.value = false;
       return;
     }
+
+    // Cancel any in-flight request before starting a new one
+    currentAbortController?.abort();
+    currentAbortController = new AbortController();
+    const { signal } = currentAbortController;
 
     loading.value = true;
     error.value = null;
@@ -57,7 +63,7 @@ export function useSearch() {
         return;
       }
 
-      const data = await searchRepos(encodeURIComponent(trimmed), page.value);
+      const data = await searchRepos(encodeURIComponent(trimmed), page.value, signal);
 
       if (requestId !== currentRequestId) return;
 
@@ -85,7 +91,9 @@ export function useSearch() {
         hasMore.value = false;
       }
     } catch (err) {
-      error.value = err?.message || "Something went wrong";
+      if (err?.name !== "AbortError") {
+        error.value = err?.message || "Something went wrong";
+      }
     } finally {
       loading.value = false;
     }
