@@ -53,10 +53,6 @@
         </p>
       </div>
 
-      <div v-else-if="isFilteredOut" class="text-center py-10">
-        <p class="text-gray-500">No repositories match your selected filters.</p>
-      </div>
-
       <div v-else>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Card
@@ -104,7 +100,6 @@ const {
   debounceSearch,
   loadMore,
   isEmptySearch,
-  isFilteredOut,
   cleanup,
 } = useSearch()
 
