@@ -10,8 +10,6 @@
       <h2 class="text-lg font-semibold group-hover:text-purple-600 transition">
         {{ repo.name }}
       </h2>
-      </div>
-
       <p class="text-sm text-gray-500">
         by <span class="text-purple-400">{{ repo.owner?.login }}</span>
       </p>
