@@ -10,12 +10,13 @@
       <h2 class="text-lg font-semibold group-hover:text-blue-600 transition">
         {{ repo.name }}
       </h2>
+      </div>
 
       <p class="text-sm text-gray-500">
         by <span class="text-purple-400">{{ repo.owner?.login }}</span>
       </p>
 
-      <p class="text-neutral-600 mt-2 line-clamp-3 dark:text-neutral-400">
+      <p class="text-neutral-600 mt-2 line-clamp-2 dark:text-neutral-400">
         {{ repo.description || "No description available." }}
       </p>
     </div>
