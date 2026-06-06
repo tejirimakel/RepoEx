@@ -1,29 +1,25 @@
-import { ref, watch } from "vue"
+import { ref, computed, watch } from "vue"
 
 const getStoredFavorites = () => {
   try {
     const stored = localStorage.getItem("favorites")
     return stored ? JSON.parse(stored) : []
-  } catch (e) {
-    console.error("Failed to parse favorites:", e)
+  } catch {
     return []
   }
 }
 
 const favorites = ref(getStoredFavorites())
-let favoriteIds = new Set(favorites.value.map(f => f.id))
+const favoriteIds = computed(() => new Set(favorites.value.map(f => f.id)))
 
 watch(
   favorites,
-  (val) => {
-    favoriteIds = new Set(val.map(f => f.id))
-    localStorage.setItem("favorites", JSON.stringify(val))
-  },
+  (val) => localStorage.setItem("favorites", JSON.stringify(val)),
   { deep: true }
 )
 
 export function useFavorites() {
-  const isFavorite = (id) => favoriteIds.has(id)
+  const isFavorite = (id) => favoriteIds.value.has(id)
 
   const addFavorite = (repo) => {
     if (isFavorite(repo.id)) return

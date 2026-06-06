@@ -7,7 +7,7 @@
     @keydown.space.prevent="goToDetail"
   >
     <div>
-      <h2 class="text-lg font-semibold group-hover:text-blue-600 transition">
+      <h2 class="text-lg font-semibold group-hover:text-purple-600 transition">
         {{ repo.name }}
       </h2>
 
