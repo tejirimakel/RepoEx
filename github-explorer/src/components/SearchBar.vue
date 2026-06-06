@@ -22,18 +22,12 @@
       <button
         v-if="localQuery"
         type="button"
+        aria-label="Clear search"
         @click="clearSearch"
         class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
       >
-        ✕
+        <span aria-hidden="true">✕</span>
       </button>
-
-      <span
-        v-if="isTyping"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400"
-      >
-        typing...
-      </span>
     </div>
 
     <button
@@ -65,28 +59,17 @@ const emit = defineEmits([
 ])
 
 const localQuery = ref(props.modelValue || "")
-const isTyping = ref(false)
-
-let debounceTimer = null
-
 
 const handleInput = () => {
+  localQuery.value = localQuery.value.trimStart()
   const value = localQuery.value.trim()
-
   emit("update:modelValue", value)
-
-  isTyping.value = true
-
-  clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(() => {
-    if (!value) return
-    emit("debounced-search", value)
-    isTyping.value = false
-  }, 500) 
+  if (value) emit("debounced-search", value)
 }
 
 const handleSubmit = () => {
   const value = localQuery.value.trim()
+  localQuery.value = value
   emit("update:modelValue", value)
   emit("search")
 }
@@ -95,7 +78,6 @@ const clearSearch = () => {
   localQuery.value = ""
   emit("update:modelValue", "")
   emit("search")
-
   inputRef.value?.focus()
 }
 

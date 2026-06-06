@@ -9,7 +9,7 @@
     </header>
 
     <section class="mb-6">
-      <SearchBar v-model="query" @debounced-search="debounceSearch" />
+      <SearchBar v-model="query" @debounced-search="debounceSearch" @search="search" />
     </section>
 
     <section class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6">
@@ -40,16 +40,16 @@
 
       <div v-if="loading" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-        <CardSkeleton v-for="n in 6" :key="n" />
+        <CardSkeleton v-for="n in 10" :key="n" />
 
       </div>
 
       <div v-else-if="error" class="text-center py-10">
         <p class="text-red-500 mb-3">{{ error }}</p>
         
-        <button @click="debounceSearch" class="px-4 py-2 border rounded hover:bg-gray-100 transition dark:hover:bg-neutral-700">
-        Retry
-      </button>
+        <button @click="search" class="px-4 py-2 border rounded hover:bg-gray-100 transition dark:hover:bg-neutral-700">
+          Retry
+        </button>
       </div>
 
       <div v-else-if="isEmptySearch" class="text-center py-10">
@@ -100,6 +100,7 @@ const {
   hasMore,
   sortBy,
   language,
+  search,
   debounceSearch,
   loadMore,
   isEmptySearch,
