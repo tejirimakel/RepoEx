@@ -20,8 +20,7 @@ export function useSearch() {
   let currentRequestId = 0;
   let currentAbortController = null;
 
-  // Builds the GitHub search query string, appending language qualifier when set.
-  // URLSearchParams in the API layer handles encoding — do NOT pre-encode here.
+
   const buildQuery = (trimmed) =>
     language.value ? `${trimmed} language:${language.value}` : trimmed;
 
