@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { searchRepos } from "../api/git";
 
 const MAX_CACHE_SIZE = 50;
@@ -20,6 +20,10 @@ export function useSearch() {
   let currentRequestId = 0;
   let currentAbortController = null;
 
+
+  const buildQuery = (trimmed) =>
+    language.value ? `${trimmed} language:${language.value}` : trimmed;
+
   const search = async (reset = true) => {
     const trimmed = query.value.trim();
 
@@ -29,7 +33,6 @@ export function useSearch() {
       return;
     }
 
-    // Cancel any in-flight request before starting a new one
     currentAbortController?.abort();
     currentAbortController = new AbortController();
     const { signal } = currentAbortController;
@@ -63,7 +66,7 @@ export function useSearch() {
         return;
       }
 
-      const data = await searchRepos(encodeURIComponent(trimmed), page.value, signal);
+      const data = await searchRepos(buildQuery(trimmed), page.value, signal);
 
       if (requestId !== currentRequestId) return;
 
@@ -99,6 +102,11 @@ export function useSearch() {
     }
   };
 
+  // Re-fetch from page 1 whenever the language filter changes
+  watch(language, () => {
+    if (query.value.trim()) search(true);
+  });
+
   const debounceSearch = () => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
@@ -114,34 +122,26 @@ export function useSearch() {
     await search(false);
   };
 
-  const filteredRepos = computed(() => {
-    let result = repos.value;
-
-    if (language.value) {
-      result = result.filter((r) => r.language === language.value);
-    }
-
-    return [...result].sort((a, b) => {
-      return sortBy.value === "stars"
+  const sortedRepos = computed(() => {
+    return [...repos.value].sort((a, b) =>
+      sortBy.value === "stars"
         ? b.stargazers_count - a.stargazers_count
-        : new Date(b.updated_at) - new Date(a.updated_at);
-    });
+        : new Date(b.updated_at) - new Date(a.updated_at)
+    );
   });
 
   const isEmptySearch = computed(
     () => hasSearched.value && repos.value.length === 0
   );
 
-  const isFilteredOut = computed(
-    () =>
-      hasSearched.value &&
-      repos.value.length > 0 &&
-      filteredRepos.value.length === 0
-  );
+  const cleanup = () => {
+    clearTimeout(timeout);
+    currentAbortController?.abort();
+  };
 
   return {
     query,
-    repos: filteredRepos,
+    repos: sortedRepos,
     loading,
     error,
     hasMore,
@@ -149,9 +149,9 @@ export function useSearch() {
     language,
     hasSearched,
     isEmptySearch,
-    isFilteredOut,
     loadMore,
     search,
     debounceSearch,
+    cleanup,
   };
 }
