@@ -87,6 +87,7 @@ import { useSearch } from "../composables/useSearch"
 import SearchBar from "../components/SearchBar.vue"
 import Card from "../components/Card.vue"
 import CardSkeleton from "../components/CardSkeleton.vue"
+import RetryBtn from "../components/retryBtn.vue"
 
 const {
   query,
