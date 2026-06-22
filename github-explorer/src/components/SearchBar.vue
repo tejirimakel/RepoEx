@@ -1,5 +1,6 @@
 <template>
   <form
+    role="search"
     @submit.prevent="handleSubmit"
     class="flex flex-col sm:flex-row gap-2 w-full"
   >
@@ -24,7 +25,7 @@
         type="button"
         aria-label="Clear search"
         @click="clearSearch"
-        class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+        class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 text-gray-600 hover:text-black dark:text-neutral-300 dark:hover:text-white"
       >
         <span aria-hidden="true">✕</span>
       </button>
