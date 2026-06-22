@@ -101,3 +101,11 @@ h2 {
     color: #e2e8f0;
   }
 }
+
+/* Keyboard-focus safety net — visible, ≥3:1 indicator in light and dark.
+   WCAG 2.4.7 (Focus Visible) & 2.4.11 (Focus Appearance). */
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
