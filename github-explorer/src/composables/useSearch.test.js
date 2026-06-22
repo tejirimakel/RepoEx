@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
 vi.mock("../api/git", () => ({
-  searchRepos: vi.fn()
+  searchRepos: vi.fn(),
+  SEARCH_RESULT_CAP: 1000
 }))
 
 import { useSearch } from "../composables/useSearch"
@@ -54,6 +55,33 @@ describe("useSearch", () => {
     await Promise.resolve()
 
     expect(error.value).toBe("API failed")
+  })
+
+  it("stops paginating at the 1000-result ceiling even when total_count is huge", async () => {
+    let page = 0
+    // Each call returns 10 unique items; total_count far exceeds the API cap.
+    searchRepos.mockImplementation(() => {
+      const start = page * 10
+      page++
+      return Promise.resolve({
+        items: Array.from({ length: 10 }, (_, i) => ({ id: start + i, name: `r${start + i}` })),
+        total_count: 5_000_000,
+      })
+    })
+
+    const { query, repos, hasMore, search, loadMore } = useSearch()
+    query.value = "vue"
+
+    await search(true)
+    // 100 pages * 10 = 1000 (the cap). Load until hasMore flips off.
+    let guard = 0
+    while (hasMore.value && guard < 200) {
+      await loadMore()
+      guard++
+    }
+
+    expect(repos.value.length).toBe(1000)
+    expect(hasMore.value).toBe(false)
   })
 
 })
