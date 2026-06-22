@@ -1,5 +1,5 @@
 <template>
-  <main aria-label="home" class="px-4 md:px-8 lg:px-16 py-6 max-w-7xl mx-auto">
+  <main id="main" tabindex="-1" aria-label="Repository search" class="px-4 md:px-8 lg:px-16 py-6 max-w-7xl mx-auto">
 
     <header class="mb-6 text-center">
       <h1 class="text-2xl font-bold">Repository Explorer</h1>
@@ -14,12 +14,12 @@
 
     <section class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-6">
       <div class="flex flex-col sm:flex-row gap-3">
-        <select aria-label="sort-filters" v-model="sortBy" class="border p-2 rounded w-full sm:w-auto">
+        <select aria-label="Sort repositories" v-model="sortBy" class="border p-2 rounded w-full sm:w-auto">
           <option value="stars">Sort by Stars</option>
           <option value="updated">Sort by Last Updated</option>
         </select>
 
-        <select aria-label="language filters" v-model="language" class="border p-2 rounded w-full sm:w-auto">
+        <select aria-label="Filter by language" v-model="language" class="border p-2 rounded w-full sm:w-auto">
           <option value="">All Languages</option>
           <option value="JavaScript">JavaScript</option>
           <option value="TypeScript">TypeScript</option>
@@ -35,6 +35,8 @@
     </section>
 
     <section>
+
+      <p class="sr-only" role="status" aria-live="polite">{{ statusMessage }}</p>
 
       <div v-if="loading" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <CardSkeleton v-for="n in 10" :key="n" />
@@ -80,7 +82,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from "vue"
+import { computed, onMounted, onUnmounted } from "vue"
 import { useSearch } from "../composables/useSearch"
 import SearchBar from "../components/SearchBar.vue"
 import Card from "../components/Card.vue"
@@ -102,6 +104,13 @@ const {
   isEmptySearch,
   cleanup,
 } = useSearch()
+
+const statusMessage = computed(() => {
+  if (loading.value) return "Loading repositories…"
+  if (isEmptySearch.value) return `No repositories found for ${query.value}`
+  if (repos.value.length) return `${repos.value.length} repositories found`
+  return ""
+})
 
 onMounted(() => window.addEventListener('pagehide', cleanup))
 onUnmounted(() => {
