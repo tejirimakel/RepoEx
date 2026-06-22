@@ -51,4 +51,11 @@ describe("SearchBar — multi-word query typing", () => {
     expect(wrapper.emitted("update:modelValue").at(-1)[0]).toBe("vue")
     expect(wrapper.emitted("search")).toBeTruthy()
   })
+
+  it("exposes a search landmark and an accessible-contrast clear button", async () => {
+    const wrapper = mount(SearchBar, { props: { modelValue: "vue" } })
+    expect(wrapper.get("form").attributes("role")).toBe("search")
+    const clear = wrapper.get("button[aria-label='Clear search']")
+    expect(clear.attributes("class")).toContain("text-gray-600")
+  })
 })
