@@ -1,5 +1,7 @@
 <template>
-  <main aria-label="repo details" class="px-4 md:px-8 py-6 max-w-3xl mx-auto">
+  <main id="main" tabindex="-1" aria-label="Repository details" class="px-4 md:px-8 py-6 max-w-3xl mx-auto">
+
+    <p class="sr-only" role="status" aria-live="polite">{{ statusMessage }}</p>
 
     <button
       @click="goBack"
@@ -29,9 +31,9 @@
       </div>
 
       <div class="flex flex-wrap gap-4 text-sm text-neutral-600 dark:text-neutral-400">
-        <span><span aria-hidden="true">⭐</span> {{ formatStars(repo.stargazers_count) }}</span>
-        <span><span aria-hidden="true">💻</span> {{ repo.language || "N/A" }}</span>
-        <span><span aria-hidden="true">🕒</span> {{ formatDate(repo.updated_at) }}</span>
+        <RepoStat icon="⭐" label="Stars" :value="formatStars(repo.stargazers_count)" />
+        <RepoStat icon="💻" label="Language" :value="repo.language || 'N/A'" />
+        <RepoStat icon="🕒" label="Last updated" :value="formatDate(repo.updated_at)" />
       </div>
 
       <a
@@ -85,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue"
+import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { getRepo, getContributors } from "../api/git"
 import { formatDate, formatStars } from "../utils/format"
@@ -93,6 +95,7 @@ import CardSkeleton from "../components/CardSkeleton.vue"
 import FavBtn from "../components/FavBtn.vue"
 import ErrorMsg from "../components/ErrorMsg.vue"
 import RetryBtn from "../components/retryBtn.vue"
+import RepoStat from "../components/RepoStat.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -102,6 +105,8 @@ const contributors = ref([])
 const contributorsError = ref(false)
 const loading = ref(true)
 const error = ref(null)
+
+const statusMessage = computed(() => (loading.value ? "Loading repository…" : ""))
 
 let abortController = null
 
