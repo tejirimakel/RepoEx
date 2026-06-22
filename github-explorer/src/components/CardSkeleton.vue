@@ -1,7 +1,6 @@
 <template>
   <div
-    role="status"
-    aria-label="Loading repository"
+    aria-hidden="true"
     class="p-4 border border-gray-200 rounded-xl shadow-sm animate-pulse bg-white dark:bg-neutral-900 dark:border-neutral-700"
   >
     <div class="h-5 bg-gray-300 rounded w-2/3 mb-2 dark:bg-neutral-800"></div>
