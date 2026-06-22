@@ -1,5 +1,5 @@
 <template>
-  <main aria-label="favorites" class="px-4 md:px-8 lg:px-16 py-6 max-w-7xl mx-auto">
+  <main id="main" tabindex="-1" aria-label="Favorites" class="px-4 md:px-8 lg:px-16 py-6 max-w-7xl mx-auto">
 
     <header class="mb-6 flex items-center justify-between">
       <div>
@@ -11,17 +11,18 @@
         <button
           aria-label="Clear all favorites"
           @click="confirmingClear = true"
-          class="text-sm text-red-500 hover:underline px-3"
+          class="text-sm text-red-700 hover:underline px-3 dark:text-red-400"
         >
           Clear all
         </button>
       </div>
 
-      <div v-if="confirmingClear" class="flex items-center gap-2 text-sm">
-        <span class="text-gray-600">Remove all?</span>
+      <div v-if="confirmingClear" role="alert" class="flex items-center gap-2 text-sm">
+        <span class="text-gray-700 dark:text-neutral-300">Remove all?</span>
         <button
+          ref="yesBtn"
           @click="confirmClear"
-          class="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600 transition"
+          class="px-3 py-1 rounded bg-red-700 text-white hover:bg-red-800 transition"
         >
           Yes
         </button>
@@ -60,13 +61,21 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, nextTick, watch } from "vue"
 import { useFavorites } from "../composables/useFavorites"
 import Card from "../components/Card.vue"
 
 const { favorites, clearFavorites } = useFavorites()
 
 const confirmingClear = ref(false)
+const yesBtn = ref(null)
+
+watch(confirmingClear, async (open) => {
+  if (open) {
+    await nextTick()
+    yesBtn.value?.focus()
+  }
+})
 
 const confirmClear = () => {
   clearFavorites()
