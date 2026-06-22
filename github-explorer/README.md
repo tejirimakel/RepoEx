@@ -69,6 +69,13 @@ Generate one at [github.com/settings/tokens](https://github.com/settings/tokens)
 - **404 page** — Catch-all route for unknown URLs
 - **Dark mode** — Respects system preference via `color-scheme`
 
+## Accessibility (WCAG 2.2 AA)
+
+- **Keyboard & focus** — Skip-to-content link, a global `:focus-visible` outline, and repository cards that navigate via a real link (not a click-only `div`), so every action is reachable and visibly focusable.
+- **Screen-reader support** — One polite `role="status"` live region per view announces loading / result counts / empty states (instead of many duplicate regions); decorative emoji and skeletons are hidden with `aria-hidden`; the shared `RepoStat` component pairs each meta value with an `sr-only` label ("1.2k stars").
+- **Semantic structure** — `role="search"` on the search form, `aria-controls`/`aria-expanded` on the mobile menu, a `role="alert"` (and focus move) on the clear-favourites confirm, and an `id="main"` landmark on every page.
+- **Colour contrast** — All text/UI tokens meet AA (e.g. owner name `purple-700`, saved favourite `amber-700`, destructive actions `red-700`, clear icon `gray-600`).
+
 ## Project Structure
 
 ```text
