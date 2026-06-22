@@ -1,5 +1,11 @@
 <template>
   <header class="border-b bg-white sticky top-0 z-50 dark:bg-neutral-900 dark:border-neutral-700">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:rounded focus:border focus:bg-white dark:focus:bg-neutral-900"
+    >
+      Skip to content
+    </a>
     <nav class="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
 
       <div class="text-xl md:text-2xl font-bold">
@@ -14,9 +20,10 @@
       </div>
 
       <button
-        class="md:hidden text-xl relative z-50"
+        class="md:hidden text-xl relative z-50 p-2 -mr-2 inline-flex items-center justify-center"
         :aria-label="isOpen ? 'Close menu' : 'Open menu'"
         :aria-expanded="isOpen"
+        aria-controls="mobile-menu"
         @click="isOpen = !isOpen"
       >
         <span aria-hidden="true" v-if="isOpen">✕</span>
@@ -27,6 +34,7 @@
     <transition name="dropdown">
       <div
         v-if="isOpen"
+        id="mobile-menu"
         class="md:hidden px-4 py-4 space-y-2 border-t bg-white dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
       >
         <router-link to="/" class="block nav-link" active-class="active-link" @click="isOpen = false">
