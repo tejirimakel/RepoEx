@@ -58,19 +58,21 @@ const emit = defineEmits([
   "search"
 ])
 
+// localQuery is the single source of truth for the input's raw text.
+// We only strip leading whitespace (so a query can't start with spaces) and
+// defer trimming to search time, letting users type multi-word queries freely.
 const localQuery = ref(props.modelValue || "")
 
 const handleInput = () => {
   localQuery.value = localQuery.value.trimStart()
+  emit("update:modelValue", localQuery.value)
   const value = localQuery.value.trim()
-  emit("update:modelValue", value)
   if (value) emit("debounced-search", value)
 }
 
 const handleSubmit = () => {
-  const value = localQuery.value.trim()
-  localQuery.value = value
-  emit("update:modelValue", value)
+  localQuery.value = localQuery.value.trim()
+  emit("update:modelValue", localQuery.value)
   emit("search")
 }
 
@@ -81,11 +83,13 @@ const clearSearch = () => {
   inputRef.value?.focus()
 }
 
+// Reconcile only when the meaningful (trimmed) value diverges — e.g. a
+// programmatic reset — so it never clobbers an in-progress trailing space.
 watch(
   () => props.modelValue,
   (newVal) => {
-    if (newVal !== localQuery.value) {
-      localQuery.value = newVal
+    if ((newVal || "").trim() !== localQuery.value.trim()) {
+      localQuery.value = newVal || ""
     }
   }
 )

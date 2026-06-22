@@ -24,7 +24,7 @@
       <div class="flex flex-wrap gap-3 text-xs text-neutral-600 dark:text-neutral-400">
         <span class="flex items-center gap-1">
           <span aria-hidden="true">⭐</span>
-          <span>{{ repo.stargazers_count }}</span>
+          <span>{{ formatStars(repo.stargazers_count) }}</span>
         </span>
 
         <span class="flex items-center gap-1">
@@ -47,6 +47,7 @@
 <script setup>
 import { useRouter } from "vue-router"
 import FavBtn from "./FavBtn.vue"
+import { formatDate, formatStars } from "../utils/format"
 
 const props = defineProps({
   repo: Object
@@ -58,11 +59,6 @@ const goToDetail = () => {
   const fullName = props.repo?.full_name
   if (!fullName) return
   const [owner, name] = fullName.split("/")
-  router.push(`/repo/${owner}/${name}`)
-}
-
-const formatDate = (date) => {
-  if (!date) return "N/A"
-  return new Date(date).toLocaleDateString()
+  router.push(`/repo/${encodeURIComponent(owner)}/${encodeURIComponent(name)}`)
 }
 </script>

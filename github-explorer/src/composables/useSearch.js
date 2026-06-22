@@ -1,5 +1,5 @@
 import { ref, computed, watch } from "vue";
-import { searchRepos } from "../api/git";
+import { searchRepos, SEARCH_RESULT_CAP } from "../api/git";
 
 const MAX_CACHE_SIZE = 50;
 
@@ -52,7 +52,9 @@ export function useSearch() {
         cache.clear();
       }
 
-      const cacheKey = `${trimmed}-${page.value}-${sortBy.value}-${language.value}`;
+      // Sorting is applied client-side (sortedRepos), so it isn't part of the
+      // fetch identity — only the query, page, and language affect the response.
+      const cacheKey = `${trimmed}-${page.value}-${language.value}`;
 
       if (cache.has(cacheKey)) {
         const cached = cache.get(cacheKey);
@@ -90,7 +92,10 @@ export function useSearch() {
       }
       cache.set(cacheKey, newRepos);
 
-      if (repos.value.length >= data.total_count) {
+      // GitHub search exposes at most SEARCH_RESULT_CAP results; requesting
+      // pages beyond that returns 422, so stop "Load more" at the ceiling.
+      const reachableTotal = Math.min(data.total_count, SEARCH_RESULT_CAP);
+      if (repos.value.length >= reachableTotal) {
         hasMore.value = false;
       }
     } catch (err) {

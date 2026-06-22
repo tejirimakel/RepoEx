@@ -13,18 +13,19 @@
     </section>
 
     <section v-else-if="error" class="text-center py-10">
-      <p class="text-red-500 mb-3">{{ error }}</p>
-      <button @click="fetchRepo" class="px-4 py-2 border rounded hover:bg-gray-100 transition dark:hover:bg-neutral-700">
-        Retry
-      </button>
+      <ErrorMsg :message="error" class="mb-3 text-left" />
+      <RetryBtn @click="fetchRepo" />
     </section>
 
     <section v-else-if="repo" class="space-y-4">
-      <div>
-        <h1 class="text-2xl font-bold">{{ repo.name }}</h1>
-        <p class="text-neutral-600 mt-1 dark:text-neutral-400">
-          {{ repo.description || "No description available" }}
-        </p>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold">{{ repo.name }}</h1>
+          <p class="text-neutral-600 mt-1 dark:text-neutral-400">
+            {{ repo.description || "No description available" }}
+          </p>
+        </div>
+        <FavBtn :repo="repo" class="shrink-0" />
       </div>
 
       <div class="flex flex-wrap gap-4 text-sm text-neutral-600 dark:text-neutral-400">
@@ -45,13 +46,17 @@
       <div class="mt-6">
         <h2 class="font-semibold mb-2">Top Contributors</h2>
 
-        <p v-if="contributors.length === 0" class="text-gray-500">
+        <p v-if="contributorsError" class="text-gray-500">
+          Couldn't load contributors.
+        </p>
+
+        <p v-else-if="contributors.length === 0" class="text-gray-500">
           No contributors found.
         </p>
 
-        <ul class="space-y-2">
+        <ul v-else class="space-y-2">
           <li
-            v-for="user in contributors.slice(0, 5)"
+            v-for="user in contributors"
             :key="user.id"
             class="flex items-center justify-between p-2 border rounded hover:bg-gray-50 dark:hover:bg-neutral-700 transition"
           >
@@ -83,8 +88,10 @@
 import { ref, onMounted, onUnmounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { getRepo, getContributors } from "../api/git"
+import { formatDate, formatStars } from "../utils/format"
 import CardSkeleton from "../components/CardSkeleton.vue"
 import FavBtn from "../components/FavBtn.vue"
+import ErrorMsg from "../components/ErrorMsg.vue"
 import RetryBtn from "../components/retryBtn.vue"
 
 const route = useRoute()
@@ -92,6 +99,7 @@ const router = useRouter()
 
 const repo = ref(null)
 const contributors = ref([])
+const contributorsError = ref(false)
 const loading = ref(true)
 const error = ref(null)
 
@@ -112,34 +120,36 @@ const fetchRepo = async () => {
 
   loading.value = true
   error.value = null
+  contributorsError.value = false
 
-  try {
-    const [repoData, contributorsData] = await Promise.all([
-      getRepo(owner, name, signal),
-      getContributors(owner, name, signal)
-    ])
+  // allSettled so a contributors failure (403 on huge repos, network) never
+  // blocks the main repo detail from rendering.
+  const [repoResult, contributorsResult] = await Promise.allSettled([
+    getRepo(owner, name, signal),
+    getContributors(owner, name, signal)
+  ])
 
-    repo.value = repoData
-    contributors.value = Array.isArray(contributorsData) ? contributorsData : []
-  } catch (err) {
-    if (err.name !== "AbortError") {
-      error.value = err?.message || "Failed to load repository"
-    }
-  } finally {
-    loading.value = false
+  if (signal.aborted) return
+
+  if (repoResult.status === "fulfilled") {
+    repo.value = repoResult.value
+  } else if (repoResult.reason?.name !== "AbortError") {
+    error.value = repoResult.reason?.message || "Failed to load repository"
   }
+
+  if (contributorsResult.status === "fulfilled") {
+    contributors.value = Array.isArray(contributorsResult.value)
+      ? contributorsResult.value
+      : []
+  } else if (contributorsResult.reason?.name !== "AbortError") {
+    contributorsError.value = true
+  }
+
+  loading.value = false
 }
 
 onMounted(fetchRepo)
 onUnmounted(() => abortController?.abort())
 
 const goBack = () => router.back()
-
-const formatDate = (date) => {
-  if (!date) return "N/A"
-  return new Date(date).toLocaleDateString()
-}
-
-const formatStars = (num) =>
-  new Intl.NumberFormat("en", { notation: "compact" }).format(num)
 </script>
